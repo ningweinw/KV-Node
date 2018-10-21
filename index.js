@@ -10,14 +10,17 @@ let secret = process.env['APPLICATION_SECRET'];
 
 function getKeyVaultCredentials(){
   if (process.env.APPSETTING_WEBSITE_SITE_NAME){
+    console.log("get credential for MSI");
     return msRestAzure.loginWithAppServiceMSI();
   } else {
+    console.log("get credential for env");
     return msRestAzure.loginWithServicePrincipalSecret(clientId, secret, domain);
   }
 }
 
 function getKeyVaultSecret(credentials) {
   let keyVaultClient = new KeyVault.KeyVaultClient(credentials);
+  console.log(`KEY_VALUT_URI=${KEY_VAULT_URI}`);
   return keyVaultClient.getSecret(KEY_VAULT_URI, 'secret', "");
 }
 
@@ -25,8 +28,11 @@ app.get('/', function (req, res) {
   getKeyVaultCredentials().then(
     getKeyVaultSecret
   ).then(function (secret){
+    console.log("secret ok");
+    console.log(`Your secret value is: ${secret.value}.`);
     res.send(`Your secret value is: ${secret.value}.`);
   }).catch(function (err) {
+    console.log(`error:${err}`);
     res.send(err);
   });
 });
