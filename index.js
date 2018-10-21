@@ -35,6 +35,17 @@ app.get('/ping', function (req, res) {
   res.send('Hello World!!!');
 });
 
+app.get('/env', function (req, res) {
+  var rtn = "Env:\n";
+  rtn += "APPSETTING_WEBSITE_SITE_NAME=";
+  rtn += process.env.APPSETTING_WEBSITE_SITE_NAME;
+  rtn += "\nMSI_ENDPOINT=";
+  rtn += process.env.MSI_ENDPOINT;
+  rtn += "\nMSI_SECRET=";
+  rtn += process.env.MSI_SECRET;
+  res.send(rtn);
+});
+
 let port = process.env.PORT || 3000;
 
 app.listen(port, function () {
