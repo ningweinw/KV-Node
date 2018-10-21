@@ -13,7 +13,7 @@ let secret = process.env['APPLICATION_SECRET'];
 function getKeyVaultCredentials(){
   if (process.env.APPSETTING_WEBSITE_SITE_NAME){
     console.log("get credential for MSI");
-    var cred = msRestAzure.loginWithAppServiceMSI();
+    var cred = msRestAzure.loginWithAppServiceMSI({resource: 'https://vault.azure.net'});
     console.log("after loginWithAppServiceMSI");
     return cred;
   } else {
