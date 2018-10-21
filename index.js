@@ -3,6 +3,8 @@ const msRestAzure = require('ms-rest-azure');
 const KeyVault = require('azure-keyvault');
 const KEY_VAULT_URI = null || process.env['KEY_VAULT_URI'];
 
+console.log(`KEY_VALUT_URI=${KEY_VAULT_URI}`);
+
 let app = express();
 let clientId = process.env['CLIENT_ID']; // service principal
 let domain = process.env['DOMAIN']; // tenant id
@@ -11,7 +13,9 @@ let secret = process.env['APPLICATION_SECRET'];
 function getKeyVaultCredentials(){
   if (process.env.APPSETTING_WEBSITE_SITE_NAME){
     console.log("get credential for MSI");
-    return msRestAzure.loginWithAppServiceMSI();
+    var cred = msRestAzure.loginWithAppServiceMSI();
+    console.log("after loginWithAppServiceMSI");
+    return cred;
   } else {
     console.log("get credential for env");
     return msRestAzure.loginWithServicePrincipalSecret(clientId, secret, domain);
@@ -20,7 +24,7 @@ function getKeyVaultCredentials(){
 
 function getKeyVaultSecret(credentials) {
   let keyVaultClient = new KeyVault.KeyVaultClient(credentials);
-  console.log(`KEY_VALUT_URI=${KEY_VAULT_URI}`);
+  console.log(`keyVaultClient credential=${kayVaultClient.credentials}`);
   return keyVaultClient.getSecret(KEY_VAULT_URI, 'secret', "");
 }
 
